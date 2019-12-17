@@ -1,0 +1,150 @@
+[bar/bar]
+
+font-0 = "Fira Code:pixelsize=11;2.25"
+font-1 = "Font Awesome 5 Free Solid:style=Solid"
+font-2 = "FontAwesome:style=Regular:pixelsize=10;0"
+
+;;monitor = "HDMI-1-2"
+
+scroll-up = i3wm-wsnext
+scroll-down = i3wm-wsprev
+
+fixed-center = true
+
+width = 100%
+height = 30
+
+background = #1e1e1e
+foreground = #707880
+
+radius = 0.0
+
+line-size = 2
+# line-color = #f00
+
+# border-size = 2
+# border-color = #00ff00
+padding-left = 1
+padding-right = 1
+module-margin = 0
+
+modules-left = i3 
+modules-center = date title
+modules-right = cpu xkeyboard battery
+
+[module/battery]
+type=internal/battery
+
+full-at = 98
+
+battery = BAT1
+
+format-charging = <label-charging>
+
+label-charging = Charging %percentage%% Time %time%
+
+format-charging-foreground = #00ff37
+
+format-chargning-underline = #00ff37
+
+format-discharging = <label-discharging>
+
+label-discharging = Discharging %percentage%% Time %time%
+
+format-discharging-foreground = #ff0000
+
+format-discharging-underline = #ff0000
+
+format-discharging-margin = 1
+
+[module/cpu]
+type=internal/cpu
+
+format = <label>
+
+format-margin = 1
+
+label = CPU %percentage-cores%
+
+format-foreground = #00ddff
+format-underline = #00ddff
+
+
+[module/xkeyboard]
+type = internal/xkeyboard
+
+format = Layout <label-layout><label-indicator>
+
+format-spacing = 0
+
+format-foreground = #dae8de
+
+format-margin = 1
+
+format-underline = #dae8de
+
+label-indicator-underline = #f60fdf
+
+label-indicator-foreground = #f60fdf
+
+label-indicator-margin = 1
+
+[module/i3]
+
+type = internal/i3
+format = <label-state> <label-mode>
+
+index-sort = true
+strip-wsnumbers = true
+
+label-focused = %name%
+label-focused-foreground = #0077be 
+label-focused-underline = #51f0b6
+label-focused-padding = 1
+label-focused-font = 2
+
+label-unfocused = %name%
+label-unfocused-foreground = #c2f0e4
+label-unfocused-underline = #f2de9d
+label-unfocused-padding = 1
+label-unfocused-font = 2
+
+label-visible = %name%
+label-visible-underline = #555555
+label-visible-padding = 1
+label-visible-font = 2
+
+label-urgent = %name%
+label-urgent-foreground = #000000
+label-urgent-background = #ffffff
+label-urgent-padding = 1
+label-urgnet-font = 2
+
+[module/date]
+type = internal/date
+interval = 1.0
+date = %A, %d %B %I:%M %p
+
+format-foreground = #f0c674
+format-underline = #ffffff
+format-padding = 1
+
+# [module/github]
+# type = internal/github
+
+# ; Accessing an access token stored in file
+# token = ${file:/path/to/file/containing/github/access.token}
+
+# ; Accessing an access token stored in an environment variable
+# token = ${env:GITHUB_ACCESS_TOKEN}
+
+# ; Whether empty notifications should be displayed or not
+# empty-notifications = false
+
+[module/title]
+type = internal/xwindow
+# format-background = #f00
+format-foreground = #f0c674
+format-underline = #ffffff
+format-padding = 1
+label-maxlen = 50
