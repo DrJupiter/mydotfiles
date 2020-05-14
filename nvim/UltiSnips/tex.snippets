@@ -1,3 +1,52 @@
+###################### PYTHON ########################################
+
+#snippet simp "Simple"
+#Hi this is 1+1 done in python:`!p snip.rv = 1+1` omg
+#endsnippet
+
+# there is also a command called snip.c which you should check 
+# out if you are getting inconsistent returns
+
+# t[n] is the value of the nth placeholder you fill so t[n] = $n
+#snippet 1st "Status" b
+#status $1`!p snip.rv=complete(t[1], ['new', 'incomplete', 'wow'])`
+#endsnippet
+
+# t[n] is the value of the nth placeholder you fill so t[n] = $n
+#snippet '^ st' "Status" r
+#status $1`!p snip.rv=complete(t[1], ['new', 'incomplete', 'wow'])`
+#endsnippet
+
+# Regular expressions are powerful
+#snippet "rep (\d+) (\w+|\W+)" "Repeat" r
+#`!p snip.rv = int(match.group(1))*match.group(2)`
+#endsnippet
+
+# Is avaliable to all python blocks below this global definition
+global !p
+def complete(t, opts):
+	if t:
+# I'm not sure if this is safe. It depends on what [len(t):] indexing for a string means.
+		opts = [ m[len(t):] for m in opts if m.startswith(t) ]
+	if len(opts) == 1:
+		return opts[0]
+	return '(' + '|'.join(opts) + ')'
+endglobal
+
+# try or regex and match
+global !p
+
+def numberplus(num,strinput):
+	try:
+		number = num + int(strinput)
+		return str(number)
+	except ValueError:
+		return "NaN"	
+endglobal
+
+###################### Environments ##################################
+
+
 snippet sign "Signature"
 Yours sincerely,
 
@@ -21,7 +70,7 @@ snippet beg "begin{} / end{}" bA
 endsnippet
 
 snippet \emp "emph {}" A 
-\emph{$0}
+\emph{$1}$0
 endsnippet
 
 snippet template "Basic Article Template" b
@@ -78,20 +127,12 @@ snippet \i "Item"
 $0
 endsnippet
 
-snippet rarrow "Right arrow"
-\rightarrow
-endsnippet
-
-snippet prarrow "Quick inline right arrow"
-\(\rightarrow\)
-endsnippet
-
 snippet \un "Underline" i
-\underline{$0}
+\underline{$1}$0
 endsnippet
 
 snippet bf "Text to bold\ textbf"
-\textbf{$0}
+\textbf{$1}$0
 endsnippet
 
 
@@ -125,6 +166,31 @@ snippet vs "Temp vspace" bA
 \\\\ \\vspace{0.3cm}
 endsnippet
 
+snippet box "box"
+\fbox{%
+	 \parbox{\textwidth}{%
+		$1
+	}%
+}%$0
+endsnippet
+
+snippet "(\\|\')sec" "Section" rbA
+\section*{$1}
+$0
+endsnippet
+
+snippet \ssec "Subsection" bA
+\subsection{$1}
+$0
+endsnippet
+
+snippet \sssec "Subsubsection" bA
+\subsubsection{$1}
+$0
+endsnippet
+
+################### MATH ##################################
+
 snippet sd "Underscore" iA
 _{$1}$0
 endsnippet
@@ -145,15 +211,6 @@ snippet hjk "New line math" bA
 \[$0\]
 endsnippet
 
-
-snippet box "box"
-\fbox{
-	 \parbox{\textwidth}{
-		$1
-	}
-}$0
-endsnippet
-
 snippet hh "cdot" iA
 \cdot
 endsnippet
@@ -166,7 +223,21 @@ snippet \fr "fraction" iA
 \\frac{$1}{$2}$0
 endsnippet
 
-#Physics snippet start f
+snippet vec! "Vector" A
+\begin{pmatrix} $1 \\\\ $2 \\\\ \end{pmatrix} $0 
+endsnippet
+
+snippet \text "text in math" i
+\text{$1}$0
+endsnippet
+
+snippet \rfc "cfrac" iA
+\cfrac{$1}{$2}$0
+endsnippet
+
+################## PHYSICS #############################
+
+###### MISCELLANEOUS 
 
 snippet fdef "Define n" bA
 jkl$1 prarrow$2 jkl$3
@@ -181,37 +252,210 @@ snippet fopq "Opgave" bA
 ${1:Number} \colorbox{${2:PowderBlue}}{${3:text}}$0
 endsnippet
 
-
 snippet fopa "Opgave" bA
 ${1:Number} \colorbox{${2:Lime}}{${3:text}}$0
 endsnippet
 
-snippet ffopg "Opgave template" bA
-${1:Preliminary information}
-
-${2:Denotations}
-
-fopg$3
-
-hjk$4
-
-fopg$5
-
-frule$6
+snippet flist "List enviroment" bA
+\begin{list}{${1:index}}{${2:title}}
+$0
+\end{list}
 endsnippet
 
-snippet tc "Temperature Celsius" iA
+snippet falign "fysik udregning"
+\setcounter{equation}{0}
+\begin{align*}
+$0
+\end{align*}
+endsnippet
+
+snippet fimp "fysik implies" iA
+\implies
+endsnippet
+
+snippet fimp "fysik implies" iA
+\implies
+endsnippet
+
+###### TEMPERATURE
+
+snippet ftc "Temperature Celsius" iA
 C\degree
 endsnippet
 
-snippet \sec "Section" bA
-\section*{$1}
+snippet fvarmekapacitet "Q = HEAT, C = HEAT CAPACITY, T = CHANGE IN TEMPERATURE" iA
+Q = C \cdot \Delta T
+endsnippet
+
+snippet fspecificvarmekapacitet "DEFINITION C" iA
+C = m \cdot c
+endsnippet
+
+snippet fspecificsmeltevarme "Q = HEAT, m = MASS, Ls = SPECIFIC SMELTEVARME" iA
+Q = m \cdot L_{s}
+endsnippet
+
+snippet fspecificfordampningsvarme "Q = HEAT, m = MASS, Lf = SPECIFIC FORDAMPNINGSVARME" iA
+Q = m \cdot L_{f}
+endsnippet
+
+snippet fnyttevirkning "NYTTEVIRKNING" iA
+\eta = \cfrac{E_{nytte}}{E_{\text{tilført}}}
+endsnippet
+
+###### NUCLEAR PHYSICS
+
+#H
+snippet fbm "Beta minus henfald"
+\( ^{${1:A}}_{${2:Z}}X \xrightarrow{\beta ^-} ^{$1}_{`!p snip.rv = numberplus(1, t[2])`}Y + ^{0}_{-1}e + \overset{\_}{v}\)
+endsnippet
+
+#H
+snippet fbp "Beta plus henfald"
+\( ^{${1:A}}_{${2:Z}}X \xrightarrow{\beta ^+} ^{$1}_{`!p snip.rv = numberplus(-1, t[2])`}Y + ^{0}_{1}e + {v}\)
+endsnippet
+
+#H
+snippet falpha "Alpha henfald"
+\( ^{${1:A}}_{${2:Z}}X \xrightarrow{\alpha} ^{`!p snip.rv = numberplus(-4, t[1])`}_{`!p snip.rv = numberplus(-2, t[2])`}{Y + ^{4}_{2}He \)
+endsnippet
+
+#H
+#EC-DECAY
+
+###### ELECTRICITY
+
+snippet "fstr[ø|']+mstyrke" "Strømstyrke |fstrømstyrke|" riA
+I = \cfrac{\delta q}{\delta t}
+endsnippet
+
+snippet feelektrisk "E = ELECTRICENERGY, U = SPÆNDINGSFALD, q = LADNING" iA
+E = U \cdot q
+endsnippet
+
+snippet feeffekt "P = EFFEKT, U = SPÆNDINGSFALD, I = STRØMSTYRKE" iA
+P = U \cdot I
+endsnippet
+
+snippet fohm "Ohms law" iA
+U = R \cdot I
+endsnippet
+
+snippet fefelt "Elektriskfelt, d = AFSTAND MELLEM TO PARALLELLE PLADER" iA
+E = \frac{U}{d}
+endsnippet
+
+snippet fpunktefelt "Elektriskfelt omkring punkt" iA
+E = k_{c} \cdot \frac{Q}{r^{2}}
+endsnippet
+
+snippet ffpunktladning "Kraft på punktladning" iA
+F = q \cdot E
+endsnippet
+
+snippet fdeltaelektriskkin "ændring i kintetisk energi af p-ladning" iA
+\Delta E_{kin} = U \cdot q
+endsnippet
+
+snippet ffbpunkt "Kraft på p-ladning i magnet felt" iA
+F_{B} = q \cdot v \cdot B \cdot \sin (a) 
+endsnippet
+
+snippet fflaplace "Laplace's law for conductors in magenetic fields" iA
+F_{l} = I \cdot L \cdot B \cdot \sin (a)
+endsnippet
+
+snippet fmagnetiskflux "Magnetic flux, A = Areal, a = angle from dimension orthogonal to A and the direction of the magnetic field" iA
+\Phi _{B} = B \cdot A \cdot \cos (a)
+endsnippet
+
+snippet ffaradayinduktion "Faraday's law for induktion in conductors" iA
+U_{ind} = - \frac{d \Phi _{B}}{dt}
+endsnippet
+
+snippet finduceretu "Induceret spændingsfald" iA
+U_{ind} = B \cdot L \cdot v
+endsnippet
+
+snippet fecharge "electron charge" iA
+-1.6021766 \cdot 10^{-19} C
+endsnippet
+
+snippet fpcharge "proton charge" iA
+1.6021766 \cdot 10^{-19} C
+endsnippet
+
+snippet fcoulombconstant "Coulomb constant" iA
+8.9876 \cdot 10^{9} \cfrac{N \cdot m^{2}}{C^{2}}
+endsnippet
+
+snippet fvacuumpermittivity "Vacuum permittivity" iA
+8.854 \cdot 10^{-12} \frac{F}{m}
+endsnippet
+
+###### MOVEMENT
+
+snippet fkin "Kinetisk energi" iA
+E_{kin} = \frac{1}{2} \cdot m \cdot v^{2}
+endsnippet
+
+snippet fgennemsnitsfart "Gennemsnits fart" iA
+v = \cfrac{\Delta s}{\Delta t}
+endsnippet
+
+################## Logic ########################
+
+snippet rwr "Logical and" iA
+\land
+endsnippet
+
+snippet fwer "Logical or" iA
+\lor
+endsnippet
+
+snippet rwer "Logical implication" iA
+\rightarrow
+endsnippet
+
+snippet wrew "Logical equivalence" iA
+\equiv
+endsnippet
+
+snippet fww "Logical negation" iA
+\neg
+endsnippet
+
+snippet lrpp "Left right parenthesis" iA
+($1)$0
+endsnippet
+
+snippet lrpb "Left right bracket" iA
+[$1]$0
+endsnippet
+
+snippet lproof "proof box for logic" bA
+\setcounter{equation}{0}
+\begin{mdframed}
+\begin{align}
 $0
+\end{align}
+\end{mdframed}
 endsnippet
 
-snippet vec! "Vector" A
-\begin{pmatrix} $1 \\\\ $2 \\\\ \end{pmatrix} $0 
+################# DELETE EVERYTHING AFTER HERE. THE SNIPPETS WILL NOT WORK ON YOUR SYSTEM #####################
+
+# Custom module I wrote for truthtables
+global !p
+import truthtable
+endglobal
+
+#`!p snip.rv = match.group(1) + match.group(2) + match.group(3)`
+snippet "truthtable (\d+) (\d+)\s?(\w+)?" "Truthtable numberoftruthvariables numberofsentences color" r
+`!p 
+if match.group(3) is not None:
+	snip.rv = truthtable.classictrue(int(match.group(1)),int(match.group(2)),match.group(3))
+else:
+	snip.rv = truthtable.classictrue(int(match.group(1)),int(match.group(2)))`
 endsnippet
 
-
-
+################################### TEMPORARY SNIPPETS ##################################
