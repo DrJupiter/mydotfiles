@@ -17,7 +17,8 @@ Plug 'lervag/vimtex'
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
 let g:vimtex_quickfix_mode=0
-
+"For forward search ; requires neovim-remote
+let g:vimtex_compiler_progname = 'nvr'
 
 Plug 'KeitaNakamura/tex-conceal.vim'
 set conceallevel=1
@@ -37,15 +38,42 @@ Plug 'junegunn/goyo.vim'
 
 "goyo end
 
-"rust
+"rust rls
 
 Plug 'rust-lang/rust.vim'
 
 "rust end
 
+"Syntax checking
+
+Plug 'vim-syntastic/syntastic'
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_signs = 0
+
+let g:syntastic_mode_map = { 'passive_filetypes': ['tex'] }
+
+"rust rls end
+
+"rust rust-analyzer
+
+
+"easy motion
+Plug 'easymotion/vim-easymotion'
+
+" Be a ninja; press space faster than an astronaut 
+
+
 "nord
 
 Plug 'arcticicestudio/nord-vim'
+
 
 
 
@@ -93,7 +121,13 @@ set guicursor=n-v-i-c:ver1
 
 set number
 
+set cursorline
+
 nmap <F9> :e! <CR>
+
+nmap <Tab> :w <CR>
+
+let mapleader = "\<space>"
 
 setlocal spell
 set spelllang=da,en_us
