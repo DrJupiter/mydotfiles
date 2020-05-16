@@ -1,39 +1,5 @@
-###################### PYTHON ########################################
+##### PYTHON
 
-#snippet simp "Simple"
-#Hi this is 1+1 done in python:`!p snip.rv = 1+1` omg
-#endsnippet
-
-# there is also a command called snip.c which you should check 
-# out if you are getting inconsistent returns
-
-# t[n] is the value of the nth placeholder you fill so t[n] = $n
-#snippet 1st "Status" b
-#status $1`!p snip.rv=complete(t[1], ['new', 'incomplete', 'wow'])`
-#endsnippet
-
-# t[n] is the value of the nth placeholder you fill so t[n] = $n
-#snippet '^ st' "Status" r
-#status $1`!p snip.rv=complete(t[1], ['new', 'incomplete', 'wow'])`
-#endsnippet
-
-# Regular expressions are powerful
-#snippet "rep (\d+) (\w+|\W+)" "Repeat" r
-#`!p snip.rv = int(match.group(1))*match.group(2)`
-#endsnippet
-
-# Is avaliable to all python blocks below this global definition
-global !p
-def complete(t, opts):
-	if t:
-# I'm not sure if this is safe. It depends on what [len(t):] indexing for a string means.
-		opts = [ m[len(t):] for m in opts if m.startswith(t) ]
-	if len(opts) == 1:
-		return opts[0]
-	return '(' + '|'.join(opts) + ')'
-endglobal
-
-# try or regex and match
 global !p
 
 def numberplus(num,strinput):
@@ -42,9 +8,36 @@ def numberplus(num,strinput):
 		return str(number)
 	except ValueError:
 		return "NaN"	
+
+def complete(t,opts):
+	if t:
+		opts = [m[len(t):] for m in opts if m.startswith(t)]
+	if len(opts) == 1:
+		return opts[0]
+	if len(opts) == 0:
+		return "" 
+	return '(' + '|'.join(opts) + ')'
+
 endglobal
 
-###################### Environments ##################################
+
+global !p
+import rust_sp_snippet_finder as st
+from pathlib import Path
+home = str(Path.home())
+snippet_path = home + "/.config/nvim/UltiSnips/tex.snippets"
+snippet_list = st.init_py(snippet_path)
+endglobal
+
+snippet test "sdf"
+$1`!p snip.rv=complete(t[1],snippet_list)`
+endsnippet
+
+snippet none
+none
+endsnippet
+
+##### PYTHON END
 
 
 snippet sign "Signature"
@@ -54,9 +47,12 @@ Klaus Jupiter Bentzen
 endsnippet
 
 snippet title "Title"
-\Large Klaus Jupiter Bentzen - $1 - ${2:date}
 
-\normalsize
+\title{${1:title}}
+
+\date{${2:date}}
+
+\author{${3:author}}
 
 $0
 endsnippet
@@ -70,7 +66,7 @@ snippet beg "begin{} / end{}" bA
 endsnippet
 
 snippet \emp "emph {}" A 
-\emph{$1}$0
+\emph{$0}
 endsnippet
 
 snippet template "Basic Article Template" b
@@ -83,7 +79,11 @@ snippet template "Basic Article Template" b
 \usepackage[]{amsmath}
 \usepackage[]{gensymb}
 \usepackage[svgnames]{xcolor}
+\usepackage{xfrac}
 $1
+
+\let\oldcolorbox\colorbox%
+\renewcommand{\colorbox}[2]{\oldcolorbox{#1}{\parbox{\textwidth}{#2}}}
 
 \begin{document}
 
@@ -127,12 +127,20 @@ snippet \i "Item"
 $0
 endsnippet
 
+snippet rarrow "Right arrow"
+\rightarrow
+endsnippet
+
+snippet prarrow "Quick inline right arrow"
+\(\rightarrow\)
+endsnippet
+
 snippet \un "Underline" i
-\underline{$1}$0
+\underline{$0}
 endsnippet
 
 snippet bf "Text to bold\ textbf"
-\textbf{$1}$0
+\textbf{$0}
 endsnippet
 
 
@@ -166,31 +174,6 @@ snippet vs "Temp vspace" bA
 \\\\ \\vspace{0.3cm}
 endsnippet
 
-snippet box "box"
-\fbox{%
-	 \parbox{\textwidth}{%
-		$1
-	}%
-}%$0
-endsnippet
-
-snippet "(\\|\')sec" "Section" rbA
-\section*{$1}
-$0
-endsnippet
-
-snippet \ssec "Subsection" bA
-\subsection{$1}
-$0
-endsnippet
-
-snippet \sssec "Subsubsection" bA
-\subsubsection{$1}
-$0
-endsnippet
-
-################### MATH ##################################
-
 snippet sd "Underscore" iA
 _{$1}$0
 endsnippet
@@ -211,6 +194,15 @@ snippet hjk "New line math" bA
 \[$0\]
 endsnippet
 
+
+snippet box "box"
+\fbox{
+	 \parbox{\textwidth}{
+		$1
+	}
+}$0
+endsnippet
+
 snippet hh "cdot" iA
 \cdot
 endsnippet
@@ -223,25 +215,19 @@ snippet \fr "fraction" iA
 \\frac{$1}{$2}$0
 endsnippet
 
-snippet vec! "Vector" A
-\begin{pmatrix} $1 \\\\ $2 \\\\ \end{pmatrix} $0 
+snippet \rfc "cfraction from amsmath" iA
+\\cfrac{$1}{$2}$0
 endsnippet
 
-snippet \text "text in math" i
-\text{$1}$0
+snippet fdq "Differential equation" iA
+\\cfrac{d$1}{d$2}$0
 endsnippet
 
-snippet \rfc "cfrac" iA
-\cfrac{$1}{$2}$0
-endsnippet
-
-################## PHYSICS #############################
-
-###### MISCELLANEOUS 
+#Physics snippet start f
 
 snippet fdef "Define n" bA
-jkl$1 prarrow$2 jkl$3
-vs$0
+\($1\) \(\rightarrow \) \( $2 \)$3
+\\ \vspace{0.3 cm}$0
 endsnippet
 
 snippet frule "Line" bA
@@ -249,17 +235,79 @@ snippet frule "Line" bA
 endsnippet
 
 snippet fopq "Opgave" bA
-${1:Number} \colorbox{${2:PowderBlue}}{${3:text}}$0
+\justify{${1:Number} \colorbox{${2:PowderBlue}}{${3:text}}}$0
 endsnippet
+
 
 snippet fopa "Opgave" bA
-${1:Number} \colorbox{${2:Lime}}{${3:text}}$0
+${1:Number} \oldcolorbox{${2:Lime}}{${3:text}}$0
 endsnippet
 
-snippet flist "List enviroment" bA
-\begin{list}{${1:index}}{${2:title}}
+snippet ffopg "Opgave template" bA
+${1:Preliminary information}
+
+${2:Denotations}
+
+fopg$3
+
+hjk$4
+
+fopg$5
+
+frule$6
+endsnippet
+
+snippet tc "Temperature Celsius" iA
+C\degree
+endsnippet
+
+snippet fohm "ohms law" iA
+U = R \cdot I
+endsnippet
+
+snippet feleffekt "Effekt ud fra I og U" iA
+P = I \cdot U
+endsnippet
+
+snippet felektriskfelt "Elektrisk felt" iA
+E = \frac{U}{d}
+endsnippet
+
+snippet fprop "Proportional to" iA
+\propto
+endsnippet
+
+snippet fkonstantacceleration "Bevægelse med konstant acceleration" iA
+s(t) = \frac{1}{2} \cdot a \cdot t^{2} + v_{0} \cdot t + s_{0}
+endsnippet
+
+snippet flist "List" bA
+\begin{list}{${1:sign}}{${2:title}}
+
 $0
+
 \end{list}
+endsnippet
+
+snippet "[\\|']sec" "Section |\sec|" rbA
+\section*{$1}
+$0
+endsnippet
+
+snippet vec! "Vector" A
+\begin{$1matrix} $2 \\\\ $3 \\\\ \end{$1matrix} $0 
+endsnippet
+
+snippet lrp "Left right parenthesis"
+\left ( $1 \right )$0
+endsnippet
+
+snippet eqsbeg "Begin Equation with split" bA
+\begin{equation}
+\begin{split}
+$1
+\end{split}
+\end{equation}$0
 endsnippet
 
 snippet falign "fysik udregning"
@@ -269,193 +317,64 @@ $0
 \end{align*}
 endsnippet
 
-snippet fimp "fysik implies" iA
-\implies
+snippet \sqrt "Square root" A
+\sqrt{$1}$0
 endsnippet
 
-snippet fimp "fysik implies" iA
-\implies
+snippet faktivitet "Aktivitet"
+A(t) = k \cdot N(t)
 endsnippet
 
-###### TEMPERATURE
-
-snippet ftc "Temperature Celsius" iA
-C\degree
+snippet fproduktionsrate "Produktionsrate"
+R = \sigma \cdot I \cdot n_{t}\\\\
 endsnippet
 
-snippet fvarmekapacitet "Q = HEAT, C = HEAT CAPACITY, T = CHANGE IN TEMPERATURE" iA
-Q = C \cdot \Delta T
+snippet ftransmission "Transmision"
+T = \rfc{I(x_{2})}{I(x_{1})}
 endsnippet
 
-snippet fspecificvarmekapacitet "DEFINITION C" iA
-C = m \cdot c
+snippet ftransmissionnul "Transmission ved I nul"
+T &= \cfrac{I(x_{2})}{I(x_{1})}\\\\
+x_{1} = 0 m \implies T &= \cfrac{I(x_{2})}{I_{0}} = e^{-\mu \cdot x}\\\\
 endsnippet
 
-snippet fspecificsmeltevarme "Q = HEAT, m = MASS, Ls = SPECIFIC SMELTEVARME" iA
-Q = m \cdot L_{s}
+snippet fmindskningafintensitet "I prop to k"
+I(r) &\propto \frac{1}{r^{2}}\\\\
+\implies \cfrac{I(r_{1})}{I(r_{0})} &= \cfrac{k \cdot \cfrac{1}{r_{1}^{2}}}{k \cdot \cfrac{1}{r_{0}^{2}}} = \cfrac{r_{0}^{2}}{r_{1}^{2}} \\\\  
 endsnippet
 
-snippet fspecificfordampningsvarme "Q = HEAT, m = MASS, Lf = SPECIFIC FORDAMPNINGSVARME" iA
-Q = m \cdot L_{f}
+snippet "f[\;|æ]kvivalentdosis" "Ækvivalent dosis |fækvivalentdosis|" riA
+H = \cfrac{\Delta E}{\Delta m} \cdot w_{r}
 endsnippet
 
-snippet fnyttevirkning "NYTTEVIRKNING" iA
-\eta = \cfrac{E_{nytte}}{E_{\text{tilført}}}
-endsnippet
-
-###### NUCLEAR PHYSICS
-
-#H
 snippet fbm "Beta minus henfald"
-\( ^{${1:A}}_{${2:Z}}X \xrightarrow{\beta ^-} ^{$1}_{`!p snip.rv = numberplus(1, t[2])`}Y + ^{0}_{-1}e + \overset{\_}{v}\)
+^{${1:A}}_{${2:Z}}X \xrightarrow{\beta ^-} ~ ^{$1}_{`!p snip.rv = numberplus(1, t[2])`}Y + ~ ^{0}_{-1}e + \overset{\_}{v}
 endsnippet
 
-#H
 snippet fbp "Beta plus henfald"
-\( ^{${1:A}}_{${2:Z}}X \xrightarrow{\beta ^+} ^{$1}_{`!p snip.rv = numberplus(-1, t[2])`}Y + ^{0}_{1}e + {v}\)
+^{${1:A}}_{${2:Z}}X \xrightarrow{\beta ^+} ~ ^{$1}_{`!p snip.rv = numberplus(-1, t[2])`}Y + ^{0}_{1}e + {v}
 endsnippet
 
-#H
 snippet falpha "Alpha henfald"
-\( ^{${1:A}}_{${2:Z}}X \xrightarrow{\alpha} ^{`!p snip.rv = numberplus(-4, t[1])`}_{`!p snip.rv = numberplus(-2, t[2])`}{Y + ^{4}_{2}He \)
+^{${1:A}}_{${2:Z}}X \xrightarrow{\alpha} ~ ^{`!p snip.rv = numberplus(-4, t[1])`}_{`!p snip.rv = numberplus(-2, t[2])`}{Y + ^{4}_{2}He 
 endsnippet
 
-#H
-#EC-DECAY
-
-###### ELECTRICITY
-
-snippet "fstr[ø|']+mstyrke" "Strømstyrke |fstrømstyrke|" riA
-I = \cfrac{\delta q}{\delta t}
+snippet fecdecay "K decay"
+^{${1:A}}_{${2:Z}}X + ~ ^{0}_{-1}e \xrightarrow{EC} ~ ^{$1}_{`!p snip.rv = numberplus(-1, t[2])`}Y + {v}
 endsnippet
 
-snippet feelektrisk "E = ELECTRICENERGY, U = SPÆNDINGSFALD, q = LADNING" iA
-E = U \cdot q
+snippet fceffektivhalveringstid "Effektiv halveringstid" iA
+T_{\sfrac{1}{2}eff} = \cfrac{T_{\sfrac{1}{2}bio} \cdot T_{\sfrac{1}{2}}}{T_{\sfrac{1}{2}bio} + T_{\sfrac{1}{2}}}
 endsnippet
 
-snippet feeffekt "P = EFFEKT, U = SPÆNDINGSFALD, I = STRØMSTYRKE" iA
-P = U \cdot I
+snippet fdosisinternkilde "Dosis fra internkilde" iA
+D = \cfrac{A_{0} \cdot T_{\sfrac{1}{2}eff} ~ \cdot \langle E \rangle}{\ln (2) \cdot \Delta m}
 endsnippet
 
-snippet fohm "Ohms law" iA
-U = R \cdot I
+snippet fgammadosishastighed "Dosis hastighed fra punktkilde"
+D' = \Gamma \cdot \cfrac{A}{x^{2}}
 endsnippet
 
-snippet fefelt "Elektriskfelt, d = AFSTAND MELLEM TO PARALLELLE PLADER" iA
-E = \frac{U}{d}
-endsnippet
-
-snippet fpunktefelt "Elektriskfelt omkring punkt" iA
-E = k_{c} \cdot \frac{Q}{r^{2}}
-endsnippet
-
-snippet ffpunktladning "Kraft på punktladning" iA
-F = q \cdot E
-endsnippet
-
-snippet fdeltaelektriskkin "ændring i kintetisk energi af p-ladning" iA
-\Delta E_{kin} = U \cdot q
-endsnippet
-
-snippet ffbpunkt "Kraft på p-ladning i magnet felt" iA
-F_{B} = q \cdot v \cdot B \cdot \sin (a) 
-endsnippet
-
-snippet fflaplace "Laplace's law for conductors in magenetic fields" iA
-F_{l} = I \cdot L \cdot B \cdot \sin (a)
-endsnippet
-
-snippet fmagnetiskflux "Magnetic flux, A = Areal, a = angle from dimension orthogonal to A and the direction of the magnetic field" iA
-\Phi _{B} = B \cdot A \cdot \cos (a)
-endsnippet
-
-snippet ffaradayinduktion "Faraday's law for induktion in conductors" iA
-U_{ind} = - \frac{d \Phi _{B}}{dt}
-endsnippet
-
-snippet finduceretu "Induceret spændingsfald" iA
-U_{ind} = B \cdot L \cdot v
-endsnippet
-
-snippet fecharge "electron charge" iA
--1.6021766 \cdot 10^{-19} C
-endsnippet
-
-snippet fpcharge "proton charge" iA
-1.6021766 \cdot 10^{-19} C
-endsnippet
-
-snippet fcoulombconstant "Coulomb constant" iA
-8.9876 \cdot 10^{9} \cfrac{N \cdot m^{2}}{C^{2}}
-endsnippet
-
-snippet fvacuumpermittivity "Vacuum permittivity" iA
-8.854 \cdot 10^{-12} \frac{F}{m}
-endsnippet
-
-###### MOVEMENT
-
-snippet fkin "Kinetisk energi" iA
-E_{kin} = \frac{1}{2} \cdot m \cdot v^{2}
-endsnippet
-
-snippet fgennemsnitsfart "Gennemsnits fart" iA
-v = \cfrac{\Delta s}{\Delta t}
-endsnippet
-
-################## Logic ########################
-
-snippet rwr "Logical and" iA
-\land
-endsnippet
-
-snippet fwer "Logical or" iA
-\lor
-endsnippet
-
-snippet rwer "Logical implication" iA
-\rightarrow
-endsnippet
-
-snippet wrew "Logical equivalence" iA
-\equiv
-endsnippet
-
-snippet fww "Logical negation" iA
-\neg
-endsnippet
-
-snippet lrpp "Left right parenthesis" iA
+snippet lrpp "round parentheses" iA
 ($1)$0
 endsnippet
-
-snippet lrpb "Left right bracket" iA
-[$1]$0
-endsnippet
-
-snippet lproof "proof box for logic" bA
-\setcounter{equation}{0}
-\begin{mdframed}
-\begin{align}
-$0
-\end{align}
-\end{mdframed}
-endsnippet
-
-################# DELETE EVERYTHING AFTER HERE. THE SNIPPETS WILL NOT WORK ON YOUR SYSTEM #####################
-
-# Custom module I wrote for truthtables
-global !p
-import truthtable
-endglobal
-
-#`!p snip.rv = match.group(1) + match.group(2) + match.group(3)`
-snippet "truthtable (\d+) (\d+)\s?(\w+)?" "Truthtable numberoftruthvariables numberofsentences color" r
-`!p 
-if match.group(3) is not None:
-	snip.rv = truthtable.classictrue(int(match.group(1)),int(match.group(2)),match.group(3))
-else:
-	snip.rv = truthtable.classictrue(int(match.group(1)),int(match.group(2)))`
-endsnippet
-
-################################### TEMPORARY SNIPPETS ##################################
