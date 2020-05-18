@@ -77,7 +77,7 @@ schemes:
       cyan: '#186c60'
       white: '#63686d'
 
-colors: *nord
+colors: *breeze
 
 mouse:
 
