@@ -10,10 +10,10 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
-
+set $alt Mod1
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:FiraCode Nerd Font 11
+font pango:Hack 8, Font Awesome 11, Font Awesome 5 Free Solid 11
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -29,8 +29,10 @@ font pango:FiraCode Nerd Font 11
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
+set $terminal "alacritty"
+
 # start a terminal
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec $terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -92,10 +94,8 @@ bindsym $mod+a focus parent
 # focus the child container
 #bindsym $mod+d focus child
 
-# Define names for default workspaces for which we configure key bindings later on.
-# We use variables to avoid repeating the names in multiple places.
 set $ws1 "1:"
-set $ws2 "2:"
+set $ws2 "2:"
 set $ws3 "3:"
 set $ws4 "4:"
 set $ws5 "5:"
@@ -105,7 +105,6 @@ set $ws8 "8:"
 set $ws9 "9:"
 set $ws10 "10:"
 
-# switch to workspace
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
 bindsym $mod+3 workspace $ws3
@@ -117,7 +116,6 @@ bindsym $mod+8 workspace $ws8
 bindsym $mod+9 workspace $ws9
 bindsym $mod+0 workspace $ws10
 
-# move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $ws1
 bindsym $mod+Shift+2 move container to workspace $ws2
 bindsym $mod+Shift+3 move container to workspace $ws3
@@ -129,12 +127,17 @@ bindsym $mod+Shift+8 move container to workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9
 bindsym $mod+Shift+0 move container to workspace $ws10
 
+
+#when window with a class of "x" is opened assign it workspace with the name of "y" in this case $ws8
+assign [class="discord"] $ws8
+#assign [class="Firefox"] $ws2
+
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -155,61 +158,57 @@ mode "resize" {
         bindsym Up resize shrink height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape or $mod+r
+        # back to normal: Enter or Escape
         bindsym Return mode "default"
         bindsym Escape mode "default"
-        bindsym $mod+r mode "default"
 }
 
 bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
+
 #bar {
 #        status_command i3status
+#        mode hide
+#        hidden_state hide
+#        modifier Mod4
 #}
 
-# Polybar
+# polybar
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
-# Language settings
-exec setxkbmap us
-
-bindsym $mod+Shift+s exec setxkbmap us
-
-bindsym $mod+Shift+d exec setxkbmap dk
-
-# Window Borders
-
-for_window [class=".*"] border pixel 0 
-
-# Background
-
-exec_always feh --bg-tile /home/winter/Pictures/prototypepopsickle.png
-
-# Wifi
-
 exec --no-startup-id nm-applet
 
+# bindsym to keys to action exec can also launch programs
 
-# Screenshot
+bindsym $mod+Shift+x exec i3lock -i /home/klaus/images/city.png
+bindsym $mod+Shift+a exec mate-volume-control
 
-bindsym $mod+Shift+p exec flameshot gui 
+#langauge and keyboard-layouts
 
-# Firefox
+exec setxkbmap -layout us
 
-bindsym $mod+Shift+f exec sensible-browser;
+bindsym $mod+Shift+d exec setxkbmap -layout dk
+bindsym $mod+Shift+s exec setxkbmap -layout us
 
-bindsym $mod+Shift+o exec sensible-browser --private-window;
+# background image
+exec_always feh --bg-center /home/klaus/Pictures/marioroom.jpg
+
+# Screen capture tool
+bindsym $mod+Shift+p exec flameshot gui
+
+# Webbrowser
+
+bindsym $mod+Shift+f exec sensible-browser
+
+bindsym $mod+shift+o exec sensible-browser --private-window
 
 # Maple
 
-bindsym $mod+Shift+m exec $HOME/maple2019/bin/xmaple
+bindsym $mod+Shift+m exec /home/klaus/maple2019/bin/xmaple
 
-# Volume
-
-bindsym $mod+Shift+a exec mate-volume-control
 
 # Scratchpad
 
@@ -223,5 +222,14 @@ bindsym $mod+equal [class="Zathura"] scratchpad show
 # Show Alacritty Scratchpad windows
 bindsym $mod+minus [class="Alacritty"] scratchpad show
 
+#i3-Gaps configurations
 
+#border_radius 0
+#smart_borders on
 
+bindsym $alt+Return exec alacritty --config-file $HOME/.config/alacritty/alacrittyqalc.yml
+
+for_window [class="^.*"] border pixel 0
+
+workspace $workspace1 gaps inner 10
+workspace $workspace1 gaps outer 5
